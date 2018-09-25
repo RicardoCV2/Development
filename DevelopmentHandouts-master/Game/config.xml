@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<config>
+	<modules>
+		<window>
+			<title window_title="Space of Conflict: Origins"/>
+			<width window_width="1024"/>
+			<height window_height="768"/>
+			<scale window_scale="1"/>
+			<fullscreen w_fullscreen="false"/>
+			<borderless w_borderless="false"/>
+			<resizable w_resizable="true"/>
+			<windowedfullscreen w_wfullscreen="false"/>
+		</window>
+		
+		<renderer>
+			<background_color r="159" g="213" b="220" a="0"/>
+			<camera_position x="0" y="0"/>
+		</renderer>
+			
+		<textures>
+		
+		</textures>
+		
+		<input>
+			
+		</input>
+		
+		<audio>
+			<music mvolume="50" mminvolume="0" mmaxvolume="100"/>
+			<fx fxvolume="50" fxminvolume="0" fxmaxvolume="100"/>
+		</audio>
+	</modules>
+</config>
