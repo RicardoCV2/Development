@@ -3,7 +3,6 @@
 
 #include "j1Module.h"
 #include "p2List.h"
-#include "PugiXml\src\pugixml.hpp"
 
 struct SDL_Texture;
 struct SDL_Surface;
@@ -18,7 +17,7 @@ public:
 	virtual ~j1Textures();
 
 	// Called before render is available
-	bool Awake(pugi::xml_node& module_node);
+	bool Awake(pugi::xml_node&);
 
 	// Called before the first frame
 	bool Start();
@@ -35,10 +34,6 @@ public:
 public:
 
 	p2List<SDL_Texture*>	textures;
-
-private:
-
-	pugi::xml_node* textures_node = nullptr;
 };
 
 

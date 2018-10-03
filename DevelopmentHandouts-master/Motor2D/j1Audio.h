@@ -2,7 +2,8 @@
 #define __j1AUDIO_H__
 
 #include "j1Module.h"
-#include "PugiXml\src\pugixml.hpp"
+#include "SDL_mixer\include\SDL_mixer.h"
+#include "p2List.h"
 
 #define DEFAULT_MUSIC_FADE_TIME 2.0f
 
@@ -19,7 +20,7 @@ public:
 	virtual ~j1Audio();
 
 	// Called before render is available
-	bool Awake(pugi::xml_node& module_node);
+	bool Awake(pugi::xml_node&);
 
 	// Called before quitting
 	bool CleanUp();
@@ -33,23 +34,10 @@ public:
 	// Play a previously loaded WAV
 	bool PlayFx(unsigned int fx, int repeat = 0);
 
-public:
-
-	uint fx_min_volume;
-	uint fx_max_volume;
-
-	uint music_min_volume;
-	uint music_max_volume;
-
-	uint music_volume;
-	uint fx_volume;
-
 private:
 
 	_Mix_Music*			music;
 	p2List<Mix_Chunk*>	fx;
-
-	pugi::xml_node* audio_node = nullptr;
 };
 
 #endif // __j1AUDIO_H__

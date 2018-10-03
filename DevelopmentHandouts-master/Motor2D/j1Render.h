@@ -4,7 +4,6 @@
 #include "SDL/include/SDL.h"
 #include "p2Point.h"
 #include "j1Module.h"
-#include "PugiXml\src\pugixml.hpp"
 
 class j1Render : public j1Module
 {
@@ -16,7 +15,7 @@ public:
 	virtual ~j1Render();
 
 	// Called before render is available
-	bool Awake(pugi::xml_node& module_node);
+	bool Awake(pugi::xml_node&);
 
 	// Called before the first frame
 	bool Start();
@@ -28,6 +27,10 @@ public:
 
 	// Called before quitting
 	bool CleanUp();
+
+	// Load / Save
+	bool Load(pugi::xml_node&);
+	bool Save(pugi::xml_node&) const;
 
 	// Blit
 	void SetViewPort(const SDL_Rect& rect);
@@ -46,10 +49,6 @@ public:
 	SDL_Rect		camera;
 	SDL_Rect		viewport;
 	SDL_Color		background;
-
-private:
-
-	pugi::xml_node* render_node = nullptr;
 };
 
 #endif // __j1RENDER_H__

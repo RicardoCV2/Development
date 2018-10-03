@@ -1,8 +1,7 @@
 #include "p2Defs.h"
 #include "p2Log.h"
-#include "j1App.h"
-#include "j1FileSystem.h"
 #include "j1Audio.h"
+#include "p2List.h"
 
 #include "SDL/include/SDL.h"
 #include "SDL_mixer\include\SDL_mixer.h"
@@ -19,7 +18,7 @@ j1Audio::~j1Audio()
 {}
 
 // Called before render is available
-bool j1Audio::Awake(pugi::xml_node& module_node)
+bool j1Audio::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Audio Mixer");
 	bool ret = true;
@@ -31,39 +30,24 @@ bool j1Audio::Awake(pugi::xml_node& module_node)
 		active = false;
 		ret = true;
 	}
-	else
+
+	// load support for the JPG and PNG image formats
+	int flags = MIX_INIT_OGG;
+	int init = Mix_Init(flags);
+
+	if((init & flags) != flags)
 	{
-		audio_node = &module_node;
+		LOG("Could not initialize Mixer lib. Mix_Init: %s", Mix_GetError());
+		active = false;
+		ret = true;
+	}
 
-		if (audio_node != nullptr)
-		{
-			music_volume = audio_node->child("music").attribute("mvolume").as_uint();
-			music_min_volume = audio_node->child("music").attribute("mminvolume").as_uint();
-			music_max_volume = audio_node->child("music").attribute("mmaxvolume").as_uint();
-
-			fx_volume = audio_node->child("fx").attribute("fxvolume").as_uint();
-			fx_min_volume = audio_node->child("fx").attribute("fxminvolume").as_uint();
-			fx_max_volume = audio_node->child("fx").attribute("fxmaxvolume").as_uint();
-		}
-
-		// load support for the JPG and PNG image formats
-		int flags = MIX_INIT_OGG;
-		int init = Mix_Init(flags);
-
-		if ((init & flags) != flags)
-		{
-			LOG("Could not initialize Mixer lib. Mix_Init: %s", Mix_GetError());
-			active = false;
-			ret = true;
-		}
-
-		//Initialize SDL_mixer
-		if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
-		{
-			LOG("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
-			active = false;
-			ret = true;
-		}
+	//Initialize SDL_mixer
+	if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+	{
+		LOG("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+		active = false;
+		ret = true;
 	}
 
 	return ret;
@@ -146,7 +130,6 @@ bool j1Audio::PlayMusic(const char* path, float fade_time)
 	}
 
 	LOG("Successfully playing %s", path);
-	Mix_VolumeMusic(music_volume);
 	return ret;
 }
 
@@ -184,8 +167,7 @@ bool j1Audio::PlayFx(unsigned int id, int repeat)
 	if(id > 0 && id <= fx.count())
 	{
 		Mix_PlayChannel(-1, fx[id - 1], repeat);
-		Mix_Volume(-1, fx_volume);
 	}
-	
+
 	return ret;
 }

@@ -24,7 +24,7 @@ public:
 	}
 
 	// Called before render is available
-	virtual bool Awake(pugi::xml_node& module_node)
+	virtual bool Awake(pugi::xml_node&)
 	{
 		return true;
 	}
@@ -59,17 +59,14 @@ public:
 		return true;
 	}
 
-	// TODO 3(2): done
-	// Save & Load -----------------------------------------------------------
-
-	virtual bool Save()
+	virtual bool Load(pugi::xml_node&)
 	{
-		return(true);
+		return true;
 	}
 
-	virtual bool Load()
+	virtual bool Save(pugi::xml_node&) const
 	{
-		return(true);
+		return true;
 	}
 
 public:

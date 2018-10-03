@@ -2,7 +2,6 @@
 #define __j1INPUT_H__
 
 #include "j1Module.h"
-#include "PugiXml\src\pugixml.hpp"
 
 //#define NUM_KEYS 352
 #define NUM_MOUSE_BUTTONS 5
@@ -37,7 +36,7 @@ public:
 	virtual ~j1Input();
 
 	// Called before render is available
-	bool Awake(pugi::xml_node& module_node);
+	bool Awake(pugi::xml_node&);
 
 	// Called before the first frame
 	bool Start();
@@ -70,10 +69,6 @@ public:
 	void GetMouseMotion(int& x, int& y);
 
 private:
-	void CleanKeys();
-
-private:
-
 	bool		windowEvents[WE_COUNT];
 	j1KeyState*	keyboard;
 	j1KeyState	mouse_buttons[NUM_MOUSE_BUTTONS];
@@ -81,8 +76,6 @@ private:
 	int			mouse_motion_y;
 	int			mouse_x;
 	int			mouse_y;
-
-	pugi::xml_node* input_node = nullptr;
 };
 
 #endif // __j1INPUT_H__

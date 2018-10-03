@@ -19,7 +19,7 @@ j1Window::~j1Window()
 }
 
 // Called before render is available
-bool j1Window::Awake(pugi::xml_node& module_node)
+bool j1Window::Awake(pugi::xml_node& config)
 {
 	LOG("Init SDL window & surface");
 	bool ret = true;
@@ -33,46 +33,36 @@ bool j1Window::Awake(pugi::xml_node& module_node)
 	{
 		//Create window
 		Uint32 flags = SDL_WINDOW_SHOWN;
+		bool fullscreen = config.child("fullscreen").attribute("value").as_bool(false);
+		bool borderless = config.child("borderless").attribute("value").as_bool(false);
+		bool resizable = config.child("resizable").attribute("value").as_bool(false);
+		bool fullscreen_window = config.child("fullscreen_window").attribute("value").as_bool(false);
 
-		window_node = &module_node;
+		width = config.child("resolution").attribute("width").as_int(640);
+		height = config.child("resolution").attribute("height").as_int(480);
+		scale = config.child("resolution").attribute("scale").as_int(1);
 
-		// TODO 4: Done
-		if (window_node != nullptr)
-		{
-			title = window_node->child("title").attribute("window_title").as_string();
-
-			width = window_node->child("width").attribute("window_width").as_int();
-			height = window_node->child("height").attribute("window_height").as_int();
-			scale = window_node->child("scale").attribute("window_scale").as_int();
-
-			fullscreen = window_node->child("fullscreen").attribute("w_fullscreen").as_bool();
-			borderless = window_node->child("borderless").attribute("w_borderless").as_bool();
-			resizable = window_node->child("resizable").attribute("w_resizable").as_bool();
-			wfullscreen = window_node->child("windowedfullscreen").attribute("w_wfullscreen").as_bool();
-		}
-		
-
-		if(fullscreen)
+		if(fullscreen == true)
 		{
 			flags |= SDL_WINDOW_FULLSCREEN;
 		}
 
-		if(borderless)
+		if(borderless == true)
 		{
 			flags |= SDL_WINDOW_BORDERLESS;
 		}
 
-		if(resizable)
+		if(resizable == true)
 		{
 			flags |= SDL_WINDOW_RESIZABLE;
 		}
 
-		if(wfullscreen)
+		if(fullscreen_window == true)
 		{
 			flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
 
-		window = SDL_CreateWindow(title.GetString(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
+		window = SDL_CreateWindow(App->GetTitle(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
 
 		if(window == NULL)
 		{
@@ -83,8 +73,6 @@ bool j1Window::Awake(pugi::xml_node& module_node)
 		{
 			//Get window surface
 			screen_surface = SDL_GetWindowSurface(window);
-
-			
 		}
 	}
 

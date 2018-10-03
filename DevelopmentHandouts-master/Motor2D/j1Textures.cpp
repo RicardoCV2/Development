@@ -2,7 +2,6 @@
 #include "p2Log.h"
 #include "j1App.h"
 #include "j1Render.h"
-#include "j1FileSystem.h"
 #include "j1Textures.h"
 
 #include "SDL_image/include/SDL_image.h"
@@ -18,7 +17,7 @@ j1Textures::~j1Textures()
 {}
 
 // Called before render is available
-bool j1Textures::Awake(pugi::xml_node& module_node)
+bool j1Textures::Awake(pugi::xml_node& config)
 {
 	LOG("Init Image library");
 	bool ret = true;
@@ -30,10 +29,6 @@ bool j1Textures::Awake(pugi::xml_node& module_node)
 	{
 		LOG("Could not initialize Image lib. IMG_Init: %s", IMG_GetError());
 		ret = false;
-	}
-	else
-	{
-		textures_node = &module_node;
 	}
 
 	return ret;

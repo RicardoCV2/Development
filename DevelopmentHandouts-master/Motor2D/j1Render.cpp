@@ -13,9 +13,6 @@ j1Render::j1Render() : j1Module()
 	background.g = 0;
 	background.b = 0;
 	background.a = 0;
-
-	camera.x = 0;
-	camera.y = 0;
 }
 
 // Destructor
@@ -23,15 +20,19 @@ j1Render::~j1Render()
 {}
 
 // Called before render is available
-bool j1Render::Awake(pugi::xml_node& module_node)
+bool j1Render::Awake(pugi::xml_node& config)
 {
 	LOG("Create SDL rendering context");
 	bool ret = true;
 	// load flags
 	Uint32 flags = SDL_RENDERER_ACCELERATED;
 
-	flags |= SDL_RENDERER_PRESENTVSYNC;
-	  
+	if(config.child("vsync").attribute("value").as_bool(true) == true)
+	{
+		flags |= SDL_RENDERER_PRESENTVSYNC;
+		LOG("Using vsync");
+	}
+
 	renderer = SDL_CreateRenderer(App->win->window, -1, flags);
 
 	if(renderer == NULL)
@@ -41,24 +42,10 @@ bool j1Render::Awake(pugi::xml_node& module_node)
 	}
 	else
 	{
-		render_node = &module_node;
-
-		if (render_node != nullptr)
-		{
-			// Utilities
-
-			camera.x = render_node->child("camera_position").attribute("x").as_int();
-			camera.y = render_node->child("camera_position").attribute("y").as_int();
-
-			background.r = render_node->child("background_color").attribute("r").as_uint();
-			background.g = render_node->child("background_color").attribute("g").as_uint();
-			background.b = render_node->child("background_color").attribute("b").as_uint();
-			background.a = render_node->child("background_color").attribute("a").as_uint();
-		}
-		
 		camera.w = App->win->screen_surface->w;
 		camera.h = App->win->screen_surface->h;
-
+		camera.x = 0;
+		camera.y = 0;
 	}
 
 	return ret;
@@ -97,6 +84,26 @@ bool j1Render::CleanUp()
 {
 	LOG("Destroying SDL render");
 	SDL_DestroyRenderer(renderer);
+	return true;
+}
+
+// Load Game State
+bool j1Render::Load(pugi::xml_node& data)
+{
+	camera.x = data.child("camera").attribute("x").as_int();
+	camera.y = data.child("camera").attribute("y").as_int();
+
+	return true;
+}
+
+// Save Game State
+bool j1Render::Save(pugi::xml_node& data) const
+{
+	pugi::xml_node cam = data.append_child("camera");
+
+	cam.append_attribute("x") = camera.x;
+	cam.append_attribute("y") = camera.y;
+
 	return true;
 }
 
